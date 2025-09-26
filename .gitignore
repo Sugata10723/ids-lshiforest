@@ -1,6 +1,8 @@
 # Add 
 data/
 venv/
+.DS_Store
+tempCodeRunnerFile.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
