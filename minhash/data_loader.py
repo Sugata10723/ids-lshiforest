@@ -3,15 +3,14 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from typing import Set, Tuple, Any
 from IPython.display import display
-from abc import ABC, abstractmethod
 
 
-class Data(ABC):
+class Loader:
     def __init__(self) -> None:
-        self.X_train = None
-        self.y_train = None
-        self.X_test = None
-        self.y_test = None
+        self.X_train: pd.DataFrame = None
+        self.y_train: pd.Series = None
+        self.X_test: pd.DataFrame = None
+        self.y_test: pd.Series = None
 
     def load(self) -> None:
         pass
@@ -20,16 +19,7 @@ class Data(ABC):
         pass
 
 
-class Data_unsw(Data):
-
-    def load(self):
-
-
-    def preprocess_minhash():
-
-
-    def preprocess_
-
+class Loader_unsw(Loader):
     def load(self) -> None:
         train_df = pd.read_csv(
             "data/unsw_nb15/UNSW_NB15_testing-set.csv"
