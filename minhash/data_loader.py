@@ -31,10 +31,10 @@ def load_unsw_for_minhash() -> (
     X_train = X_train[config.categorical_columns_unsw]
     X_test = X_test[config.categorical_columns_unsw]
 
-    X_train = process_for_minhash(X_train)
-    X_test = process_for_minhash(X_test)
+    X_train_minhash = process_for_minhash(X_train)
+    X_test_minhash = process_for_minhash(X_test)
 
-    return X_train, y_train, X_test, y_test, y_cat
+    return X_train_minhash, y_train, X_test_minhash, y_test, y_cat
 
 
 def load_nsl_for_minhash() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
@@ -55,10 +55,10 @@ def load_nsl_for_minhash() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
     X_train = X_train[config.categorical_columns_nsl]
     X_test = X_test[config.categorical_columns_nsl]
 
-    X_train = process_for_minhash(X_train)
-    X_test = process_for_minhash(X_test)
+    X_train_minhash = process_for_minhash(X_train)
+    X_test_minhash = process_for_minhash(X_test)
 
-    return X_train, y_train, X_test, y_test
+    return X_train_minhash, y_train, X_test_minhash, y_test
 
 
 def load_unsw_nb15_with_binned_features() -> (
@@ -115,11 +115,10 @@ def load_unsw_nb15_with_binned_features() -> (
     X_train_comed = pd.concat([X_train_categorical, X_train_bs], axis=1)
     X_test_comed = pd.concat([X_test_categorical, X_test_bs], axis=1)
 
-    # Convert each row into a set of "feature:value" strings
-    # X_train = X_train_comed.apply(row_to_set, axis=1)
-    # X_test = X_test_comed.apply(row_to_set, axis=1)
+    X_train_minhash = process_for_minhash(X_train_comed)
+    X_test_minhash = process_for_minhash(X_test_comed)
 
-    return X_train_comed, y_train, X_test_comed, y_test, y_cat
+    return X_train_minhash, y_train, X_test_minhash, y_test, y_cat
 
 
 def load_nsl_kdd_with_binned_features() -> (
@@ -170,10 +169,10 @@ def load_nsl_kdd_with_binned_features() -> (
         [X_test_bs, X_test[config.categorical_columns_nsl]], axis=1
     )
 
-    X_train_sets = process_for_minhash(X_train_comed)
-    X_test_sets = process_for_minhash(X_test_comed)
+    X_train_minhash = process_for_minhash(X_train_comed)
+    X_test_minhash = process_for_minhash(X_test_comed)
 
-    return X_train_sets, y_train, X_test_sets, y_test
+    return X_train_minhash, y_train, X_test_minhash, y_test
 
 
 # convert x: pd.DataFrame to set
