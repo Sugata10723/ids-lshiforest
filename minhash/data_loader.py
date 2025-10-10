@@ -1,14 +1,13 @@
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import LabelEncoder, StandardScaler
-from typing import Set, Tuple, Any, List, Dict
-from IPython.display import display
+from sklearn.preprocessing import StandardScaler
+from typing import Tuple
 import config
 
 # load_unsw_for_minhash
 # load_nsl_for_minhash
-# load_unsw_nb15_with_binned_features
-# load_nsl_kdd_with_binned_features
+# load_unsw_binned
+# load_nsl_binned
 
 
 def load_unsw_for_minhash() -> (
@@ -61,9 +60,7 @@ def load_nsl_for_minhash() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
     return X_train_minhash, y_train, X_test_minhash, y_test
 
 
-def load_unsw_nb15_with_binned_features() -> (
-    Tuple[pd.Series, pd.Series, pd.Series, pd.Series, pd.Series]
-):
+def load_unsw_binned() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series, pd.Series]:
     """数値データもビニングして使う"""
     train_df = pd.read_csv("data/unsw_nb15/UNSW_NB15_testing-set.csv")
     test_df = pd.read_csv("data/unsw_nb15/UNSW_NB15_training-set.csv")
@@ -121,9 +118,7 @@ def load_unsw_nb15_with_binned_features() -> (
     return X_train_minhash, y_train, X_test_minhash, y_test, y_cat
 
 
-def load_nsl_kdd_with_binned_features() -> (
-    Tuple[pd.Series, pd.Series, pd.Series, pd.Series]
-):
+def load_nsl_binned() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
     """数値をビニングして使用"""
     train_df = pd.read_csv(
         "data/nsl_kdd/KDDTrain+.txt", header=None, names=config.columns_nsl
