@@ -1,8 +1,10 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.decomposition import PCA
+from sklearn.model_selection import train_test_split
 from typing import Tuple
 import config
+import pickle
 
 # load data type
 # load_nsl_kdd
@@ -78,27 +80,27 @@ def load_unsw_nb15() -> Tuple[pd.DataFrame, pd.Series, pd.DataFrame, pd.Series]:
     return X_train, y_train, X_test, y_test
 
 
-def load_cic_ids() -> (
-    Tuple[pd.DataFrame, pd.Series, pd.DataFrame, pd.Series, pd.Series]
-):
-    """CIC-IDS-2018のminhash用のデータセットを読み込み"""
-    train_df = pd.read_csv("../data/cicids2018/02-14-2018.csv")
-    train_df = train_df[train_df["Label"] == "Benign"]  # 正常通信だけで学習
-    train_df = train_df.reset_index(drop=True)
-    test_df = pd.read_csv("../data/cicids2018/02-15-2018.csv", nrows=20000)
-    y_cat = test_df["Label"]  # のちの分析用に用意
+def load_cic_ids() -> Tuple[pd.DataFrame, pd.Series, pd.DataFrame, pd.Series]:
+    """
+    CIC-IDS-2018のminhash用のデータセットを読み込み
+    https://www.kaggle.com/datasets/solarmainframe/ids-intrusion-csv
+    """
+    with open("../data/cicids2018/alldata.pkl", "rb") as file:
+        df = pickle.load(file)
 
-    y_train = train_df["Label"]
-    y_test = test_df["Label"]
-    X_train = train_df.drop("Label", axis=1)
-    X_test = test_df.drop("Label", axis=1)
+    df_sample = df.sample(n=50000, random_state=42).reset_index(drop=True)
+    df_y = df_sample["Label"]
+    X_train, X_test, y_train, y_test = train_test_split(
+        df_sample, df_y, test_size=0.3, random_state=42
+    )
+    X_train = X_train[X_train["Label"] == "Benign"]
 
     X_train = X_train[config.numerical_columns_cic]
     X_test = X_test[config.numerical_columns_cic]
 
     X_train, X_test = preprocess(X_train, X_test, n=10)
 
-    return X_train, y_train, X_test, y_test, y_cat
+    return X_train, y_train, X_test, y_test
 
 
 def preprocess(
