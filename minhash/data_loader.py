@@ -20,11 +20,11 @@ def load_unsw_for_minhash() -> (
 ):
     """UNSWのminhash用のデータセットを読み込み"""
     train_df = pd.read_csv(
-        "data/unsw_nb15/UNSW_NB15_testing-set.csv"
+        "../data/unsw_nb15/UNSW_NB15_testing-set.csv"
     )  # テストとトレーニングが逆
     train_df = train_df[train_df["label"] == 0]  # 正常通信だけで学習
     train_df = train_df.reset_index()
-    test_df = pd.read_csv("data/unsw_nb15/UNSW_NB15_training-set.csv")
+    test_df = pd.read_csv("../data/unsw_nb15/UNSW_NB15_training-set.csv")
     y_cat = test_df["attack_cat"]  # のちの分析用に用意
     train_df.drop(["id", "attack_cat", "rate"], axis=1, inplace=True)
     test_df.drop(["id", "attack_cat", "rate"], axis=1, inplace=True)
@@ -47,12 +47,12 @@ def load_nsl_for_minhash() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
     """nsl-kddデータセットのminhash用に変換したものを読み込み"""
 
     train_df = pd.read_csv(
-        "data/nsl_kdd/KDDTrain+.txt", header=None, names=config.columns_nsl
+        "../data/nsl_kdd/KDDTrain+.txt", header=None, names=config.columns_nsl
     )
     train_df = train_df[train_df["class"] == "normal"]
     train_df = train_df.reset_index()
     test_df = pd.read_csv(
-        "data/nsl_kdd/KDDTest+.txt", header=None, names=config.columns_nsl
+        "../data/nsl_kdd/KDDTest+.txt", header=None, names=config.columns_nsl
     )
 
     y_train = train_df["class"]
@@ -71,10 +71,10 @@ def load_nsl_for_minhash() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
 
 def load_unsw_binned() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series, pd.Series]:
     """数値データもビニングして使う"""
-    train_df = pd.read_csv("data/unsw_nb15/UNSW_NB15_testing-set.csv")
+    train_df = pd.read_csv("../data/unsw_nb15/UNSW_NB15_testing-set.csv")
     train_df = train_df[train_df["label"] == 0]  # 正常通信だけで学習
     train_df = train_df.reset_index()
-    test_df = pd.read_csv("data/unsw_nb15/UNSW_NB15_training-set.csv")
+    test_df = pd.read_csv("../data/unsw_nb15/UNSW_NB15_training-set.csv")
 
     y_cat = test_df["attack_cat"]  # 攻撃手法分析用
 
@@ -113,12 +113,12 @@ def load_unsw_binned() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series, pd.S
 def load_nsl_binned() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
     """数値をビニングして使用"""
     train_df = pd.read_csv(
-        "data/nsl_kdd/KDDTrain+.txt", header=None, names=config.columns_nsl
+        "../data/nsl_kdd/KDDTrain+.txt", header=None, names=config.columns_nsl
     )
     train_df = train_df[train_df["class"] == "normal"]
     train_df = train_df.reset_index()
     test_df = pd.read_csv(
-        "data/nsl_kdd/KDDTest+.txt", header=None, names=config.columns_nsl
+        "../data/nsl_kdd/KDDTest+.txt", header=None, names=config.columns_nsl
     )
 
     y_train = train_df["class"]
@@ -205,10 +205,10 @@ def load_cic_for_minhash() -> (
     Tuple[pd.Series, pd.Series, pd.Series, pd.Series, pd.Series]
 ):
     """CIC-IDS-2018のminhash用のデータセットを読み込み"""
-    train_df = pd.read_csv("data/cicids2018/02-14-2018.csv")
+    train_df = pd.read_csv("../data/cicids2018/02-14-2018.csv")
     train_df = train_df[train_df["Label"] == "Benign"]  # 正常通信だけで学習
     train_df = train_df.reset_index()
-    test_df = pd.read_csv("data/cicids2018/02-15-2018.csv", nrows=20000)
+    test_df = pd.read_csv("../data/cicids2018/02-15-2018.csv", nrows=20000)
     y_cat = test_df["Label"]  # のちの分析用に用意
 
     y_train = train_df["Label"]

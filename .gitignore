@@ -3,6 +3,7 @@ data/
 venv/
 .DS_Store
 tempCodeRunnerFile.py
+.mypy_cache
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
