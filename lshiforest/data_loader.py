@@ -94,6 +94,7 @@ def load_cic_ids() -> Tuple[pd.DataFrame, pd.Series, pd.DataFrame, pd.Series]:
         df_sample, df_y, test_size=0.3, random_state=42
     )
     X_train = X_train[X_train["Label"] == "Benign"]
+    y_test = pd.Series(y_test)
 
     X_train = X_train[config.numerical_columns_cic]
     X_test = X_test[config.numerical_columns_cic]
