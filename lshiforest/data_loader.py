@@ -13,12 +13,12 @@ import config
 def load_nsl_kdd() -> Tuple[pd.DataFrame, pd.Series, pd.DataFrame, pd.Series]:
     # Load the NSL-KDD dataset
     train_df = pd.read_csv(
-        "../data/nsl-kdd/KDDTrain+.txt", header=None, names=config.columns_nsl
+        "../data/nsl_kdd/KDDTrain+.txt", header=None, names=config.columns_nsl
     )
-    train_df = train_df[train_df["attack"] == "normal"]
-    train_df = train_df.reset_index()
+    train_df = train_df[train_df["class"] == "normal"]
+    train_df = train_df.reset_index(drop=True)
     test_df = pd.read_csv(
-        "../data/nsl-kdd/KDDTest+.txt", header=None, names=config.columns_nsl
+        "../data/nsl_kdd/KDDTest+.txt", header=None, names=config.columns_nsl
     )
 
     # delete uneccesary features
@@ -30,14 +30,14 @@ def load_nsl_kdd() -> Tuple[pd.DataFrame, pd.Series, pd.DataFrame, pd.Series]:
     )
 
     # encode the attack column to 0/1
-    train_df["attack"] = train_df["attack"].apply(lambda x: 0 if x == "normal" else 1)
-    test_df["attack"] = test_df["attack"].apply(lambda x: 0 if x == "normal" else 1)
+    train_df["class"] = train_df["class"].apply(lambda x: 0 if x == "normal" else 1)
+    test_df["class"] = test_df["class"].apply(lambda x: 0 if x == "normal" else 1)
 
     # Separate features and labels
-    X_train = train_df.drop("attack", axis=1)
-    y_train = train_df["attack"]
-    X_test = test_df.drop("attack", axis=1)
-    y_test = test_df["attack"]
+    y_train = train_df["class"]
+    y_test = test_df["class"]
+    X_train = train_df.drop("class", axis=1)
+    X_test = test_df.drop("class", axis=1)
 
     X_train, X_test = preprocess(X_train, X_test, n=10)
 
@@ -47,8 +47,8 @@ def load_nsl_kdd() -> Tuple[pd.DataFrame, pd.Series, pd.DataFrame, pd.Series]:
 def load_unsw_nb15() -> Tuple[pd.DataFrame, pd.Series, pd.DataFrame, pd.Series]:
     # Load the UNSW-NB15 dataset
     train_df = pd.read_csv("../data/unsw_nb15/UNSW_NB15_testing-set.csv")  # traversal
-    train_df = train_df[train_df["label"] == 1]
-    train_df = train_df.reset_index()
+    train_df = train_df[train_df["label"] == 0]  # Train on normal traffic
+    train_df = train_df.reset_index(drop=True)
     test_df = pd.read_csv("../data/unsw_nb15/UNSW_NB15_training-set.csv")
 
     # Preprocess the data
@@ -84,7 +84,7 @@ def load_cic_ids() -> (
     """CIC-IDS-2018のminhash用のデータセットを読み込み"""
     train_df = pd.read_csv("../data/cicids2018/02-14-2018.csv")
     train_df = train_df[train_df["Label"] == "Benign"]  # 正常通信だけで学習
-    train_df = train_df.reset_index()
+    train_df = train_df.reset_index(drop=True)
     test_df = pd.read_csv("../data/cicids2018/02-15-2018.csv", nrows=20000)
     y_cat = test_df["Label"]  # のちの分析用に用意
 
@@ -93,8 +93,8 @@ def load_cic_ids() -> (
     X_train = train_df.drop("Label", axis=1)
     X_test = test_df.drop("Label", axis=1)
 
-    X_train = X_train.drop(config.categorical_columns_cic)
-    X_test = X_test.drop(config.categorical_columns_cic)
+    X_train = X_train[config.numerical_columns_cic]
+    X_test = X_test[config.numerical_columns_cic]
 
     X_train, X_test = preprocess(X_train, X_test, n=10)
 
@@ -113,7 +113,7 @@ def preprocess(
     X_test_sc = scaler.transform(X_test)
 
     # PCA
-    n = 10
+    pca = PCA(n_components=n)
     pca = PCA(n_components=n)
     X_train_pca = pca.fit_transform(X_train_sc)
     X_test_pca = pca.transform(X_test_sc)
