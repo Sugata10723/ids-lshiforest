@@ -2,15 +2,17 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
-from typing import Tuple
+from typing import Tuple, List
 import numpy.typing as npt
 import config
 
-# List of main function
+## List of main function
 # load_unsw_for_minhash
 # load_nsl_for_minhash
 # load_unsw_binned
 # load_nsl_binned
+# load_cic_for_minhash
+# load_cic_binned
 
 
 def load_unsw_for_minhash() -> (
@@ -156,7 +158,7 @@ def _process_for_minhash(df: pd.DataFrame) -> pd.Series:  # よりよい方法�
 def _process_sc_pca(
     X_train_num: pd.DataFrame,
     X_test_num: pd.DataFrame,
-    num_column_names: list,
+    num_column_names: List[str],
     n_pca: int = 5,
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
 
@@ -197,3 +199,27 @@ def _process_sc_pca(
         X_test_bs[col] = X_test_bs[col].fillna(-1).astype(int)
 
     return X_train_bs, X_test_bs
+
+
+def load_cic_for_minhash() -> (
+    Tuple[pd.Series, pd.Series, pd.Series, pd.Series, pd.Series]
+):
+    """CIC-IDS-2018のminhash用のデータセットを読み込み"""
+    train_df = pd.read_csv("data/cicids2018/02-14-2018.csv")
+    train_df = train_df[train_df["Label"] == "Benign"]  # 正常通信だけで学習
+    train_df = train_df.reset_index()
+    test_df = pd.read_csv("data/cicids2018/02-15-2018.csv", nrows=20000)
+    y_cat = test_df["Label"]  # のちの分析用に用意
+
+    y_train = train_df["Label"]
+    y_test = test_df["Label"]
+    X_train = train_df.drop("Label", axis=1)
+    X_test = test_df.drop("Label", axis=1)
+
+    X_train = X_train[config.categorical_columns_cic]
+    X_test = X_test[config.categorical_columns_cic]
+
+    X_train_minhash = _process_for_minhash(X_train)
+    X_test_minhash = _process_for_minhash(X_test)
+
+    return X_train_minhash, y_train, X_test_minhash, y_test, y_cat
