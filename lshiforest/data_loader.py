@@ -114,7 +114,7 @@ def preprocess(
 
     # PCA
     pca = PCA(n_components=n)
-    pca = PCA(n_components=n)
+    X_train_pca = pca.fit_transform(X_train_sc)
     X_train_pca = pca.fit_transform(X_train_sc)
     X_test_pca = pca.transform(X_test_sc)
 
