@@ -9,12 +9,39 @@ import config
 import pickle
 
 ## List of main function
+# load_cic_for_minhash
 # load_unsw_for_minhash
 # load_nsl_for_minhash
 # load_unsw_binned
 # load_nsl_binned
-# load_cic_for_minhash
-# load_cic_binned
+
+
+def load_cic_for_minhash() -> (
+    Tuple[pd.Series, pd.Series, pd.Series, pd.Series, pd.Series]
+):
+    """CIC-IDS-2018のminhash用のデータセットを読み込み"""
+    # _load_big_cic_data()
+    with open("../data/cicids2018/alldata.pkl", "rb") as file:
+        df: pd.DataFrame = pickle.load(file)
+
+    df_sample = df.sample(n=50000, random_state=42).reset_index(drop=True)
+    df_y = df_sample["Label"]
+    X_train, X_test, y_train, y_cat = train_test_split(
+        df_sample, df_y, test_size=0.3, random_state=42
+    )
+    X_train = X_train[X_train["Label"] == "Benign"]  # 正常データだけ
+    y_train = y_train[X_train.index]
+    y_test = pd.Series([0 if label == "Benign" else 1 for label in y_cat])
+    X_train = X_train.reset_index(drop=True)
+    y_cat = y_cat.reset_index(drop=True)
+
+    X_train = X_train[config.categorical_columns_cic]
+    X_test = X_test[config.categorical_columns_cic]
+
+    X_train_minhash = _process_for_minhash(X_train)
+    X_test_minhash = _process_for_minhash(X_test)
+
+    return X_train_minhash, y_train, X_test_minhash, y_test, y_cat
 
 
 def load_unsw_for_minhash() -> (
@@ -24,10 +51,11 @@ def load_unsw_for_minhash() -> (
     train_df = pd.read_csv(
         "../data/unsw_nb15/UNSW_NB15_testing-set.csv"
     )  # テストとトレーニングが逆
-    train_df = train_df[train_df["label"] == 0]  # 正常通信だけで学習
-    train_df = train_df.reset_index()
     test_df = pd.read_csv("../data/unsw_nb15/UNSW_NB15_training-set.csv")
     y_cat = test_df["attack_cat"]  # のちの分析用に用意
+
+    train_df = train_df[train_df["label"] == 0]  # 正常通信だけで学習
+    train_df = train_df.reset_index()
     train_df.drop(["id", "attack_cat", "rate"], axis=1, inplace=True)
     test_df.drop(["id", "attack_cat", "rate"], axis=1, inplace=True)
 
@@ -45,20 +73,22 @@ def load_unsw_for_minhash() -> (
     return X_train_minhash, y_train, X_test_minhash, y_test, y_cat
 
 
-def load_nsl_for_minhash() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
+def load_nsl_for_minhash() -> (
+    Tuple[pd.Series, pd.Series, pd.Series, pd.Series, pd.Series]
+):
     """nsl-kddデータセットのminhash用に変換したものを読み込み"""
-
     train_df = pd.read_csv(
         "../data/nsl_kdd/KDDTrain+.txt", header=None, names=config.columns_nsl
     )
-    train_df = train_df[train_df["class"] == "normal"]
-    train_df = train_df.reset_index()
     test_df = pd.read_csv(
         "../data/nsl_kdd/KDDTest+.txt", header=None, names=config.columns_nsl
     )
+    train_df = train_df[train_df["class"] == "normal"]
+    train_df = train_df.reset_index()
 
     y_train = train_df["class"]
-    y_test = test_df["class"]
+    y_cat = test_df["class"]
+    y_test = pd.Series([0 if label == "normal" else 1 for label in y_cat])
     X_train = train_df.drop("class", axis=1)
     X_test = test_df.drop("class", axis=1)
 
@@ -68,15 +98,15 @@ def load_nsl_for_minhash() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
     X_train_minhash = _process_for_minhash(X_train)
     X_test_minhash = _process_for_minhash(X_test)
 
-    return X_train_minhash, y_train, X_test_minhash, y_test
+    return X_train_minhash, y_train, X_test_minhash, y_test, y_cat
 
 
 def load_unsw_binned() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series, pd.Series]:
     """数値データもビニングして使う"""
     train_df = pd.read_csv("../data/unsw_nb15/UNSW_NB15_testing-set.csv")
+    test_df = pd.read_csv("../data/unsw_nb15/UNSW_NB15_training-set.csv")
     train_df = train_df[train_df["label"] == 0]  # 正常通信だけで学習
     train_df = train_df.reset_index()
-    test_df = pd.read_csv("../data/unsw_nb15/UNSW_NB15_training-set.csv")
 
     y_cat = test_df["attack_cat"]  # 攻撃手法分析用
 
@@ -112,19 +142,19 @@ def load_unsw_binned() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series, pd.S
     return X_train_minhash, y_train, X_test_minhash, y_test, y_cat
 
 
-def load_nsl_binned() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
+def load_nsl_binned() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series, pd.Series]:
     """数値をビニングして使用"""
     train_df = pd.read_csv(
         "../data/nsl_kdd/KDDTrain+.txt", header=None, names=config.columns_nsl
     )
-    train_df = train_df[train_df["class"] == "normal"]
-    train_df = train_df.reset_index()
     test_df = pd.read_csv(
         "../data/nsl_kdd/KDDTest+.txt", header=None, names=config.columns_nsl
     )
+    train_df = train_df[train_df["class"] == "normal"].reset_index(drop=True)
 
     y_train = train_df["class"]
-    y_test = test_df["class"]
+    y_cat = test_df["class"]
+    y_test = pd.Series([0 if label == "normal" else 1 for label in y_cat])
     X_train = train_df.drop(["class", "difficulty"], axis=1)
     X_test = test_df.drop(["class", "difficulty"], axis=1)
 
@@ -148,30 +178,7 @@ def load_nsl_binned() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
     X_train_minhash = _process_for_minhash(X_train_comed)
     X_test_minhash = _process_for_minhash(X_test_comed)
 
-    return X_train_minhash, y_train, X_test_minhash, y_test
-
-
-def load_cic_for_minhash() -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
-    """CIC-IDS-2018のminhash用のデータセットを読み込み"""
-    # _load_big_cic_data()
-    with open("../data/cicids2018/alldata.pkl", "rb") as file:
-        df = pickle.load(file)
-
-    df_sample = df.sample(n=50000, random_state=42).reset_index(drop=True)
-    df_y = df_sample["Label"]
-    X_train, X_test, y_train, y_test = train_test_split(
-        df_sample, df_y, test_size=0.3, random_state=42
-    )
-    X_train = X_train[X_train["Label"] == "Benign"]
-    # y_train = y_train[X_train.index]
-
-    X_train = X_train[config.categorical_columns_cic]
-    X_test = X_test[config.categorical_columns_cic]
-
-    X_train_minhash = _process_for_minhash(X_train)
-    X_test_minhash = _process_for_minhash(X_test)
-
-    return X_train_minhash, y_train, X_test_minhash, y_test
+    return X_train_minhash, y_train, X_test_minhash, y_test, y_cat
 
 
 def _process_for_minhash(df: pd.DataFrame) -> pd.Series:  # よりよい方法あるかもしれない
