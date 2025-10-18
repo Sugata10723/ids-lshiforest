@@ -93,7 +93,7 @@ def load_cic_ids() -> Tuple[pd.DataFrame, pd.Series, pd.DataFrame, pd.Series]:
     X_train, X_test, y_train, y_test = train_test_split(
         df_sample, df_y, test_size=0.3, random_state=42
     )
-    X_train = X_train[X_train["Label"] == "Benign"]
+    X_train = X_train[X_train["Label"] == "Benign"]  # 正常データだけで学習
     y_test = pd.Series(y_test)
 
     X_train = X_train[config.numerical_columns_cic]
