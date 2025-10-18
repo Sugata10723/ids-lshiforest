@@ -1,0 +1,7 @@
+// MinHashLSHiForest Tree 0
+digraph {
+	node [shape=box style=filled]
+	root [label="Samples: 82332
+Attack Ratio: 0.55
+Hash Index: 0" fillcolor="0 0.5506000097167566 0.8"]
+}

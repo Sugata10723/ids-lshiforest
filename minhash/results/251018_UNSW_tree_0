@@ -1,0 +1,75 @@
+// MinHashLSHiForest Tree 0
+digraph {
+	node [shape=box]
+	root [label="Samples: 256
+Hash Index: 0"]
+	"root-1162508779" [label="Samples: 12
+Hash Index: 3"]
+	root -> "root-1162508779" [label=1162508779]
+	"root-1162508779-2799701572" [label="Samples: 1
+Hash Index: 4"]
+	"root-1162508779" -> "root-1162508779-2799701572" [label=2799701572]
+	"root-1162508779-358914989" [label="Samples: 11
+Hash Index: 16"]
+	"root-1162508779" -> "root-1162508779-358914989" [label=358914989]
+	"root-1261146971" [label="Samples: 59
+Hash Index: 1"]
+	root -> "root-1261146971" [label=1261146971]
+	"root-1261146971-1890916329" [label="Samples: 37
+Hash Index: 16"]
+	"root-1261146971" -> "root-1261146971-1890916329" [label=1890916329]
+	"root-1261146971-141905011" [label="Samples: 22
+Hash Index: 3"]
+	"root-1261146971" -> "root-1261146971-141905011" [label=141905011]
+	"root-1261146971-141905011-358914989" [label="Samples: 21
+Hash Index: 16"]
+	"root-1261146971-141905011" -> "root-1261146971-141905011-358914989" [label=358914989]
+	"root-1261146971-141905011-1030606451" [label="Samples: 1
+Hash Index: 4"]
+	"root-1261146971-141905011" -> "root-1261146971-141905011-1030606451" [label=1030606451]
+	"root-1014482255" [label="Samples: 161
+Hash Index: 1"]
+	root -> "root-1014482255" [label=1014482255]
+	"root-1014482255-141905011" [label="Samples: 101
+Hash Index: 16"]
+	"root-1014482255" -> "root-1014482255-141905011" [label=141905011]
+	"root-1014482255-1197870595" [label="Samples: 28
+Hash Index: 16"]
+	"root-1014482255" -> "root-1014482255-1197870595" [label=1197870595]
+	"root-1014482255-1389238438" [label="Samples: 18
+Hash Index: 16"]
+	"root-1014482255" -> "root-1014482255-1389238438" [label=1389238438]
+	"root-1014482255-1600764249" [label="Samples: 8
+Hash Index: 16"]
+	"root-1014482255" -> "root-1014482255-1600764249" [label=1600764249]
+	"root-1014482255-525993498" [label="Samples: 6
+Hash Index: 16"]
+	"root-1014482255" -> "root-1014482255-525993498" [label=525993498]
+	"root-972514833" [label="Samples: 14
+Hash Index: 16"]
+	root -> "root-972514833" [label=972514833]
+	"root-123498614" [label="Samples: 3
+Hash Index: 1"]
+	root -> "root-123498614" [label=123498614]
+	"root-123498614-458805081" [label="Samples: 2
+Hash Index: 16"]
+	"root-123498614" -> "root-123498614-458805081" [label=458805081]
+	"root-123498614-1067232697" [label="Samples: 1
+Hash Index: 2"]
+	"root-123498614" -> "root-123498614-1067232697" [label=1067232697]
+	"root-1249059612" [label="Samples: 7
+Hash Index: 3"]
+	root -> "root-1249059612" [label=1249059612]
+	"root-1249059612-1149776515" [label="Samples: 1
+Hash Index: 4"]
+	"root-1249059612" -> "root-1249059612-1149776515" [label=1149776515]
+	"root-1249059612-1540110990" [label="Samples: 6
+Hash Index: 4"]
+	"root-1249059612" -> "root-1249059612-1540110990" [label=1540110990]
+	"root-1249059612-1540110990-1683204368" [label="Samples: 4
+Hash Index: 16"]
+	"root-1249059612-1540110990" -> "root-1249059612-1540110990-1683204368" [label=1683204368]
+	"root-1249059612-1540110990-1402812069" [label="Samples: 2
+Hash Index: 16"]
+	"root-1249059612-1540110990" -> "root-1249059612-1540110990-1402812069" [label=1402812069]
+}
